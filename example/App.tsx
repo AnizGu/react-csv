@@ -1,3 +1,4 @@
+import React from 'react';
 import { CSVDownload, CSVImport } from '../lib';
 import styled from 'styled-components';
 import './App.css';
@@ -31,7 +32,6 @@ function App() {
         <button>Download CSV</button>
       </CSVDownload>
       <CSVImport
-        disabled
         onChange={async (datas) => {
           console.log("CSVImport-onChange", datas);
           return datas;

@@ -34,7 +34,6 @@ export const CSVImport: React.FC<CSVImportProps> = ({ style, className, columns 
     const handleChange = async (e: ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
         if (e.target.files) {
-            console.log("e", e);
             const file = e.target.files[0]
             const controller = new CSVController({
                 columns,
@@ -53,7 +52,7 @@ export const CSVImport: React.FC<CSVImportProps> = ({ style, className, columns 
         <ImportWrapper className={classNames('react-csv-import-wrapper', className)}>
             <ImportSelect style={style}>
                 <ImportUpload onMouseDown={handleUpload}>
-                    <input ref={inputRef} type="file" style={{ display: 'none' }} onChange={handleChange}></input>
+                    <input ref={inputRef} accept='text/csv' type="file" style={{ display: 'none' }} onChange={handleChange}></input>
                     {children}
                 </ImportUpload>
             </ImportSelect>
