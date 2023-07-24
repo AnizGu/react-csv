@@ -1,13 +1,15 @@
 import axios from 'axios';
-import { first, isArray, isString, map, pick } from 'lodash';
+import { first, isArray, isNull, isObject, isString, isUndefined, map, pick } from 'lodash';
 import { ParseResult, parse, unparse } from 'papaparse';
 
-export type CSVData = Record<string, any>;
+export type CSVData = {
+    [key: string]: any;
+}
 
 export interface CSVConfig {
     filename?: string;
     columns?: string[];
-    onChange?: (data: CSVData[], fields?: string[]) => Promise<CSVData[]>;
+    onChange?: (data: CSVData[], fields?: string[]) => void | Promise<CSVData[]>;
 }
 
 export class CSVController {
@@ -27,6 +29,10 @@ export class CSVController {
 
     getConfig() {
         return this.config;
+    }
+
+    private isCSVData(data: any): data is CSVData {
+        return !isNaN(data) && !isNull(data) && !isUndefined(data) && !isArray(data) && isObject(data);
     }
 
     private isBlob(blob: any): blob is Blob {
@@ -85,8 +91,12 @@ export class CSVController {
                     const oriData = parse<CSVData>(result, { header: true, dynamicTyping: true });
                     if (columns && columns.length)
                         oriData.data = map(oriData.data, data => pick(data, columns));
-                    if (onChange)
-                        oriData.data = await onChange(oriData.data, oriData.meta.fields);
+                    if (onChange) {
+                        const processedData = await onChange(oriData.data, oriData.meta.fields);
+                        if (this.isCSVData(processedData)) {
+                            oriData.data = processedData;
+                        }
+                    }
                     return resolve(oriData);
                 }
             }
