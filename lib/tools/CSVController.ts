@@ -88,7 +88,7 @@ export class CSVController {
             reader.onload = async (e) => {
                 let result = e.target?.result;
                 if (isString(result)) {
-                    const oriData = parse<CSVData>(result, { header: true, dynamicTyping: true });
+                    const oriData = parse<CSVData>(result, { header: true, dynamicTyping: true, skipEmptyLines: 'greedy' });
                     if (columns && columns.length)
                         oriData.data = map(oriData.data, data => pick(data, columns));
                     if (onChange) {
